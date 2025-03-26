@@ -7,6 +7,7 @@ Ever had an audio recording you wanted to convert to text? This app makes it sup
 ## How to Use the App
 
 ### 1. Create Your Account
+- First visit [the home page.](https://transcriber-henna.vercel.app/home)
 - Click on "Register"
 - Enter a username, email, and password
 - Verify your details and create an account

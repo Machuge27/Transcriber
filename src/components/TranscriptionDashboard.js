@@ -59,8 +59,8 @@ const TranscriptionDashboard = () => {
   // Responsive check
   useEffect(() => {
     const checkMobile = () => {
-      // setIsMobile(window.innerWidth <= 768);
-      setIsMobile(window.innerWidth <= 480);
+      setIsMobile(window.innerWidth <= 768);
+      // setIsMobile(window.innerWidth <= 480);
     };
     
     // Check on mount and add resize listener
