@@ -25,12 +25,12 @@ export default function HomePage() {
                 </p>
                 {/* Animated Microphone */}
                 <div className="flex justify-center mt-4">
-                    <img src="/path-to-animated-mic.gif" alt="Animated Microphone" className="w-16 h-16 animate-bounce" />
+                    <img src="/mic.jpg" alt="Animated Microphone" className="w-16 h-16 animate-bounce" />
                 </div>
             </div>
             
             {/* Image Placeholder for How It Works */}
-            <img src="/path-to-how-it-works.jpg" alt="How It Works" className="w-2/3 mt-6 rounded-lg shadow-lg" />
+            {/* <img src="/path-to-how-it-works.jpg" alt="How It Works" className="w-2/3 mt-6 rounded-lg shadow-lg" /> */}
 
             {/* Buttons */}
             <div className="relative z-10 mt-8 flex gap-6 animate-slide-up">
@@ -60,7 +60,7 @@ export default function HomePage() {
             </div>
 
             {/* Placeholder for Transcription History UI */}
-            <img src="/path-to-transcription-history.jpg" alt="Transcription History" className="w-2/3 mt-6 rounded-lg shadow-lg" />
+            {/* <img src="/path-to-transcription-history.jpg" alt="Transcription History" className="w-2/3 mt-6 rounded-lg shadow-lg" /> */}
 
             {/* Privacy Section */}
             <div className="relative z-10 mt-12 text-center max-w-2xl">
