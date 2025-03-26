@@ -182,7 +182,7 @@ const AudioUploader = ({ onTranscriptionComplete }) => {
                 }`}
             >
                 {isLoading ? (
-                    <>
+                    <div className={`${currentTheme.text}`}>
                         <svg 
                             className="animate-spin h-5 w-5 mr-3" 
                             xmlns="http://www.w3.org/2000/svg" 
@@ -204,7 +204,7 @@ const AudioUploader = ({ onTranscriptionComplete }) => {
                             ></path>
                         </svg>
                         Transcribing... can take a while...
-                    </>
+                    </div>
                 ) : (
                     <>
                         <CloudUploadIcon className="w-5 h-5 mr-2" />
