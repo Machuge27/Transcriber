@@ -246,7 +246,7 @@ const TranscriptionHistory = ({
 
                                 <div className="flex-grow flex items-center bg-gray-100 rounded-full p-1 pr-4">
                                     <audio controls className="w-full">
-                                        <source src={`http://192.168.0.108:8000${item.audio_file}`} type="audio/mpeg" />
+                                        <source src={`https://hillarymutai.pythonanywhere.com${item.audio_file}`} type="audio/mpeg" />
                                         Your browser does not support the audio element.
                                     </audio>
                                 </div>
