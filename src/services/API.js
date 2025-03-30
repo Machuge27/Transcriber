@@ -1,12 +1,14 @@
 import axios from 'axios';
 
 // Base URL for your API
-const BASE_URL = 'https://transcriber-backend-l6tb.onrender.com/api/';
+// https://hillarymutai.pythonanywhere.com/
+// https://transcriber-backend-l6tb.onrender.com/
+// const BASE_URL = 'https://transcriber-backend-l6tb.onrender.com/api/';
 // const BASE_URL = 'https://hillarymutai.pythonanywhere.com/api/';
-// const BASE_URL = 'http://192.168.100.6:8000/api';
-// const BASE_URL = 'http://192.168.100.6:8000/api';
+const BASE_URL = 'http://192.168.100.6:8000/api';
+// const BASE_URL = 'http://192.168.0.115:8000/api';
 
-// Create an axios instance with default configuration
+// Create an axios instance with default configuratio
 const api = axios.create({
     baseURL: BASE_URL,
     headers: {
@@ -76,6 +78,16 @@ export const AuthService = {
     }
 };
 
+const refreshAccessToken = async () => {
+    try {
+        const response = await api.post('/token/refresh/', { refresh: localStorage.getItem('refresh') });
+        return response.data.access;
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        throw error;
+    }
+};
+
 // Transcription related API calls
 export const TranscriptionService = {
     uploadAudio: async (formData, token) => {
@@ -109,6 +121,22 @@ export const TranscriptionService = {
         } catch (error) {
             return handleApiError(error);
         }
+    },
+
+    getTranscriptionProgress: async (token) => {
+        try {
+            const response = await api.get('/transcription/progress/', {
+                headers: { 
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            return {
+                success: true,
+                data: response.data
+            };
+        } catch (error) {
+            return handleApiError(error);
+        }
     }
 };
 
@@ -125,15 +153,15 @@ api.interceptors.response.use(
             // Logic for token refresh would go here
             // This is a placeholder and should be implemented based on your backend
             // For example:
-            // try {
-            //     const newToken = await refreshAccessToken();
-            //     api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-            //     originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-            //     return api(originalRequest);
-            // } catch (refreshError) {
-            //     // Logout user if refresh fails
-            //     return Promise.reject(refreshError);
-            // }
+            try {
+                const newToken = await refreshAccessToken();
+                api.defaults.headres.common['Authorization'] = `Bearer ${newToken}`;
+                originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+                return api(originalRequest);
+            } catch (refreshError) {
+                // Logout user if refresh fails
+                return Promise.reject(refreshError);
+            }
         }
 
         return Promise.reject(error);

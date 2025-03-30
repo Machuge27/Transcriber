@@ -53,14 +53,14 @@ const TranscriptionDashboard = () => {
   const [previewedItemId, setPreviewedItemId] = useState(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const textareaRef = useRef(null);
+  const {textareaRef, editorRef} = useRef(null);
   const { token, theme, setTheme } = useAuth();
 
   // Responsive check
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-      // setIsMobile(window.innerWidth <= 480);
+      // setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1080);
     };
     
     // Check on mount and add resize listener
@@ -129,11 +129,23 @@ const TranscriptionDashboard = () => {
     setPreviewMode(!previewMode);
   };
 
+  const scroll = (target) => {
+    if (target.current) {
+      target.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // Ensures it's centered in the viewport
+      });
+    }
+  };
+  
   const handlePreviewTranscription = (item) => {
     setTranscription(item.transcribed_text);
     setEditMode(true);
     setPreviewMode(true);
     setPreviewedItemId(item.id);
+    if (editorRef?.current) {
+      scroll(editorRef);
+    }
   };
 
   const onPreviewTranscription = (item) => {
@@ -152,11 +164,11 @@ const TranscriptionDashboard = () => {
         ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full'} 
         transition-transform duration-300 ease-in-out`}
     >
-      <div className="flex justify-between items-center p-2 border-b">
+      <div className="flex justify-between items-center p-2 pr-0 border-b">
         <h3 className="text-xl font-bold">Dashboard Controls</h3>
         <button 
           onClick={() => setIsMobileSidebarOpen(false)}
-          className="text-gray-600 hover:text-gray-900"
+          className="text-gray-600 hover:text-gray-300"
         >
           <XIcon className="w-6 h-6" />
         </button>
@@ -172,7 +184,7 @@ const TranscriptionDashboard = () => {
                 key={themeKey}
                 onClick={() => {
                   setTheme(themeKey);
-                  setIsMobileSidebarOpen(false);
+                  // setIsMobileSidebarOpen(false);
                 }}
                 className={`px-3 py-1 rounded text-xs flex items-center ${
                   theme === themeKey 
@@ -206,7 +218,7 @@ const TranscriptionDashboard = () => {
             {editMode ? 'Editing' : 'Edit'}
           </button>
         </div>
-        {/* <BillingAndUserControls /> */}
+        <BillingAndUserControls />
       </div>
     </div>
   );
@@ -219,7 +231,7 @@ const TranscriptionDashboard = () => {
         <div className="flex justify-between items-center p-4 border-b">
           <button 
             onClick={() => setIsMobileSidebarOpen(true)}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-600 hover:text-gray-200"
           >
             <MenuIcon className="w-6 h-6" />
           </button>
@@ -235,8 +247,8 @@ const TranscriptionDashboard = () => {
           />
 
           {/* Transcription Editor */}
-          <div className="p-4">
-            <div className="flex justify-between items-center mb-4">
+          <div className="p-4 pr-0">
+            <div ref={editorRef} className="flex justify-between items-center mb-4" >
               <h2 className="text-2xl font-bold">Transcription Editor</h2>
               {editMode && (
                 <button
@@ -249,18 +261,19 @@ const TranscriptionDashboard = () => {
             </div>
             
             {editMode && !previewMode ? (
-              <>
+              <div className='w-100 h-[50rem] p-4 border rounded overflow-auto'>
+                <h3 className="text-lg font-bold mb-2">Markdown Controls</h3>
                 <MarkdownControls onApplyMarkdown={handleApplyMarkdown} />
                 <textarea
                   ref={textareaRef}
                   value={transcription}
                   onChange={(e) => setTranscription(e.target.value)}
-                  className={`w-full h-64 p-4 border rounded ${currentTheme.background} ${currentTheme.text}`}
+                  className={`w-full h-[40rem] p-4 border rounded ${currentTheme.background} ${currentTheme.text}`}
                   placeholder="Edit your transcription here..."
                 />
-              </>
+              </div>
             ) : editMode && previewMode ? (
-              <div className={`w-full h-64 p-4 border rounded overflow-auto prose ${
+              <div className={`w-100 h-[50rem] p-4 border rounded overflow-auto prose ${
                 theme === 'dark' ? 'prose-invert' : ''
               } ${currentTheme.background} ${currentTheme.text}`}>
                 <ReactMarkdown 
@@ -271,7 +284,7 @@ const TranscriptionDashboard = () => {
                 </ReactMarkdown>
               </div>
             ) : (
-              <div className={`w-full h-64 p-4 border rounded overflow-auto ${currentTheme.background} ${currentTheme.text}`}>
+              <div className={`w-100 h-[50rem] p-4 border rounded overflow-auto ${currentTheme.background} ${currentTheme.text}`}>
                 {transcription || 'Transcription will appear here. Upload an audio file to get started.'}
               </div>
             )}
@@ -288,8 +301,8 @@ const TranscriptionDashboard = () => {
   return (
     <div className={`flex h-screen ${currentTheme.background} ${currentTheme.text}`}>
       {/* Sidebar for Desktop */}
-      <div className={`w-70 p-4 ${currentTheme.sidebar} border-r`}>
-        <h3 className="text-xl font-bold mb-6">Dashboard Controls</h3>
+      <div className={`w-[25rem] h-60 p-4 ${currentTheme.background} pr-0 ${currentTheme.sidebar}`}>
+        <h3 className="text-xl font-bold mb-6 border-b-2 border-gray-300">Dashboard Controls</h3>
         
         {/* Theme Selector */}
         <div className="mb-6">
@@ -328,7 +341,7 @@ const TranscriptionDashboard = () => {
             {editMode ? 'Editing' : 'Edit'}
           </button>
         </div>
-        {/* <BillingAndUserControls /> */}
+        <BillingAndUserControls />
       </div>
 
       {/* Main Content Area - Desktop */}

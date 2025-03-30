@@ -74,6 +74,7 @@ export const AuthProvider = ({ children }) => {
             if (result.success) {
                 const { access } = result.data;
                 localStorage.setItem('token', access);
+                localStorage.setItem('refresh', access);
                 
                 const decoded = jwtDecode(access);
                 setUser(decoded);

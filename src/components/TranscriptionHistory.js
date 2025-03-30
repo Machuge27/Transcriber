@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api, { TranscriptionService } from '../services/API';
 import { useAuth } from '../contexts/AuthContext';
 import { 
@@ -13,23 +13,26 @@ import {
   PlayIcon  
 } from 'lucide-react';
 
+
 const TranscriptionHistory = ({ 
     onPreviewTranscription
   }) => {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [activeItem, setActiveItem] = useState(null);
     const [previewedItemId, setPreviewedItemId] = useState(null);
     const { token, theme } = useAuth();
 
     const themeClasses = {
         dark: {
-            background: 'bg-[#1a1a2e]', // Deeper dark background
+            background: 'bg-[#1a1a2e]', 
             text: 'text-gray-100',
             sidebar: 'bg-[#16213e]',
             border: 'border-gray-700',
             itemBackground: 'bg-[#0f3460]',
-            transcriptionBackground: 'bg-[#16213e]'
+            transcriptionBackground: 'bg-[#16213e]',
+            activeBorder: 'border-2 border-indigo-500 shadow-lg shadow-indigo-500/50' // Added glowing effect
         },
         light: {
             background: 'bg-white',
@@ -37,7 +40,8 @@ const TranscriptionHistory = ({
             sidebar: 'bg-gray-100',
             border: 'border-gray-200',
             itemBackground: 'bg-gray-50',
-            transcriptionBackground: 'bg-gray-100'
+            transcriptionBackground: 'bg-gray-100',
+            activeBorder: 'border-2 border-indigo-500 shadow-lg shadow-indigo-500/50' 
         },
         sepia: {
             background: 'bg-[#F4ECD8]',
@@ -45,7 +49,8 @@ const TranscriptionHistory = ({
             sidebar: 'bg-[#E7DFC6]',
             border: 'border-gray-300',
             itemBackground: 'bg-[#E7DFC6]',
-            transcriptionBackground: 'bg-[#F4ECD8]'
+            transcriptionBackground: 'bg-[#F4ECD8]',
+            activeBorder: 'border-2 border-indigo-500 shadow-lg shadow-indigo-500/50' 
         }
     };
 
@@ -92,7 +97,7 @@ const TranscriptionHistory = ({
         if (!confirmDelete) return;
 
         try {
-            const response = await api.delete(`/transcription/history/${item.id}/`, {
+            const response = await api.delete(`/transcription/${item.task_id}/delete/`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -108,7 +113,7 @@ const TranscriptionHistory = ({
 
     const handleBookmark = async (item) => {
         try {
-            const response = await api.post(`/transcription/history/${item.id}/bookmark/`, {}, {
+            const response = await api.post(`/transcription/history/${item.task_id}/bookmark/`, {}, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -129,9 +134,14 @@ const TranscriptionHistory = ({
         }
     };
 
+    const handleItemClick = (item) => {
+        setActiveItem(activeItem === item.id ? null : item.id);
+        handlePreviewClick(item);
+    };
+
     if (loading) {
         return (
-            <div className={`${currentTheme.background} ${currentTheme.text} shadow-lg rounded-xl p-6 border ${currentTheme.border}`}>
+            <div className={`${currentTheme.background} ${currentTheme.text} shadow-lg rounded-xl p-6 border ${currentTheme.border} mt-4`}>
                 <div className="flex items-center justify-center space-x-3">
                     <RefreshCwIcon className="w-6 h-6 text-indigo-600 animate-spin" />
                     <span className="text-gray-600">Loading transcription history...</span>
@@ -139,27 +149,40 @@ const TranscriptionHistory = ({
             </div>
         );
     }
-
-    if (error) {
-        return (
-            <div className={`${currentTheme.background} ${currentTheme.text} shadow-lg rounded-xl p-6 border border-red-200`}>
-                <div className="flex items-center text-red-600">
-                    <AlertTriangleIcon className="w-8 h-8 mr-3" />
-                    <div>
-                        <h3 className="font-semibold">Error Fetching History</h3>
-                        <p className="text-sm text-gray-600">{error}</p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    
+    // if (error) {
+    //     return (
+    //         <div className={`${currentTheme.background} ${currentTheme.text} shadow-lg rounded-xl p-6 border border-red-200`}>
+    //             <div className="flex items-center text-red-600">
+    //                 <AlertTriangleIcon className="w-8 h-8 mr-3" />
+    //                 <div>
+    //                     <h3 className="font-semibold">Error Fetching</h3>
+    //                     <p className="text-sm text-gray-600">{error}</p>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     );
+    // }
 
     return (
+
         <div className={`${currentTheme.background} ${currentTheme.text} shadow-lg rounded-xl p-6 border ${currentTheme.border} mt-6`}>
             <div className="flex items-center mb-4">
                 <FileTextIcon className="w-8 h-8 text-indigo-600 mr-3" />
                 <h2 className={`text-2xl font-bold ${currentTheme.text}`}>Transcription History</h2>
             </div>
+
+            {error && (
+                <div className={`${currentTheme.background} ${currentTheme.text} shadow-lg rounded-xl p-6 border border-red-200 m-4`}>
+                    <div className="flex items-center text-red-600">
+                        <AlertTriangleIcon className="w-8 h-8 mr-3" />
+                        <div>
+                            <h3 className="font-semibold">Error Fetching</h3>
+                            <p className="text-sm text-gray-600">{error}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
             
             {history.length === 0 ? (
                 <div className="text-center py-10 text-gray-500">
@@ -167,11 +190,11 @@ const TranscriptionHistory = ({
                     <p className="text-gray-600">No transcriptions yet. Upload an audio file to get started!</p>
                 </div>
             ) : (
-                <div className="space-y-4 h-1/2 overflow-y-auto">
+                <div className="space-y-4 h-[40rem] overflow-y-auto ">
                     {history.map((item) => (
                         <div 
                             key={item.id} 
-                            className={`${currentTheme.itemBackground} rounded-lg p-4 border ${currentTheme.border} hover:shadow-sm transition-all duration-300 group relative`}
+                            className={`${currentTheme.itemBackground} rounded-lg p-4 border ${currentTheme.border} hover:shadow-sm transition-all duration-300 group relative ${activeItem === item.id ? currentTheme.activeBorder : ""}`}
                         >
                             <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center">
@@ -193,7 +216,7 @@ const TranscriptionHistory = ({
                                         View Audio
                                     </a> */}
                                     <button 
-                                        onClick={() => handlePreviewClick(item)}
+                                        onClick={() => {handlePreviewClick(item); handleItemClick(item)}}
                                         className="hidden md:flex text-sm text-green-600 hover:text-green-400 items-center"
                                         title="Preview Transcription"
                                     >
@@ -212,7 +235,7 @@ const TranscriptionHistory = ({
                                         <FileIcon className="w-5 h-5 text-indigo-500" />
                                     </a> */}
                                     <button 
-                                        onClick={() => handlePreviewClick(item)}
+                                        onClick={() => {handlePreviewClick(item); handleItemClick(item); }}
                                         className="md:hidden text-green-600 hover:text-green-400"
                                         title="Preview Transcription"
                                     >
@@ -246,7 +269,9 @@ const TranscriptionHistory = ({
 
                                 <div className="flex-grow flex items-center bg-gray-100 rounded-full p-1 pr-4">
                                     <audio controls className="w-full">
-                                        <source src={`https://transcriber-backend-l6tb.onrender.com${item.audio_file}`} type="audio/mpeg" />
+                                        {/* <source src={`https://hillarymutai.pythonanywhere.com${item.audio_file}`} type="audio/mpeg" /> */}
+                                        {/* <source src={`https://hillarymutai.pythonanywhere.com${item.audio_file}`} type="audio/mpeg" /> */}
+                                        <source src={`http://192.168.100.6:8000/media/audio_uploads/${item.task_id}.wav`} type="audio/mpeg" />
                                         Your browser does not support the audio element.
                                     </audio>
                                 </div>
@@ -273,6 +298,7 @@ const TranscriptionHistory = ({
                     ))}
                 </div>
             )}
+            
         </div>
     );
 };
