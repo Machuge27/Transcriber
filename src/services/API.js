@@ -4,8 +4,8 @@ import axios from 'axios';
 // https://hillarymutai.pythonanywhere.com/
 // https://transcriber-backend-l6tb.onrender.com/
 // const BASE_URL = 'https://transcriber-backend-l6tb.onrender.com/api/';
-// const BASE_URL = 'https://hillarymutai.pythonanywhere.com/api/';
-const BASE_URL = 'http://192.168.100.6:8000/api';
+const BASE_URL = 'https://hillarymutai.pythonanywhere.com/api/';
+// const BASE_URL = 'http://192.168.100.6:8000/api';
 // const BASE_URL = 'http://192.168.0.115:8000/api';
 
 // Create an axios instance with default configuratio
