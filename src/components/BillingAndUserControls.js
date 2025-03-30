@@ -326,7 +326,7 @@ const BillingAndUserControls = () => {
     <div className={`p-0 mt-5 h-full bg-transparent ${currentTheme.text}`}>
       <h3 className="text-xl font-bold mt-4 border-b-2 border-gray-300 mb-6">Usage & Subscription</h3>
       
-      <div  className='overflow-y-auto h-[42rem]'>
+      <div  className='overflow-y-auto h-[40rem]'>
         {/* Billing Progress Indicators */}
         <div className="mb-6 pr-4">
           <h4 className="text-lg font-semibold mb-4 flex items-center border-b border-gray-300">
@@ -379,25 +379,25 @@ const BillingAndUserControls = () => {
             <PlanCard planType="basic" />
             <PlanCard planType="premium" />
           </motion.div>
+          <ContactModal />
+          {/* User Controls */}
+          <div className={`justify-items-start text-left sticky rounded bottom-0 ${currentTheme.background}`}>
+          
+          <button 
+            onClick={logout}
+            className={`flex items-center justify-start p-2 rounded hover:bg-red-100 text-red-600 transition-colors`}
+          >
+            <LogOutIcon className="w-5 h-5 mr-2" />
+            Logout
+          </button>
+          <div className="relative z-10 m-0 p-2 text-gray-400 text-sm">
+            © {new Date().getFullYear()} AI Transcriber. All Rights Reserved.
+          </div>
+          </div>
         </div>
   
-        {/* User Controls */}
-              <div className={`justify-items-start text-left sticky rounded bottom-0 ${currentTheme.background}  mr-3`}>
-              <ContactModal />
               
-              <button 
-                onClick={logout}
-                className={`flex items-center justify-start p-2 rounded hover:bg-red-100 text-red-600 transition-colors`}
-              >
-                <LogOutIcon className="w-5 h-5 mr-2" />
-                Logout
-              </button>
-              <div className="relative z-10 m-0 p-4 text-gray-400 text-sm">
-                © {new Date().getFullYear()} AI Transcriber. All Rights Reserved.
-              </div>
-              </div>
-              
-              {/* Purchase Modal */}
+        {/* Purchase Modal */}
         <PurchaseModal />
       </div>
     </div>
