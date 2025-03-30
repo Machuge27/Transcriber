@@ -190,7 +190,7 @@ const TranscriptionHistory = ({
                     <p className="text-gray-600">No transcriptions yet. Upload an audio file to get started!</p>
                 </div>
             ) : (
-                <div className="space-y-4 h-[40rem] overflow-y-auto ">
+                <div className="space-y-4 h-[35rem] overflow-y-auto ">
                     {history.map((item) => (
                         <div 
                             key={item.id} 
