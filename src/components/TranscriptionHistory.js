@@ -271,7 +271,7 @@ const TranscriptionHistory = ({
                                     <audio controls className="w-full">
                                         {/* <source src={`https://hillarymutai.pythonanywhere.com/media/audio_uploads/${item.task_id}.wav`} type="audio/mpeg" /> */}
                                         {/* <source src={`https://transcriber-backend-l6tb.onrender.com/media/audio_uploads/${item.task_id}.wav`} type="audio/mpeg" /> */}
-                                        <source src={`http://192.168.100.6:8000/media/audio_uploads/${item.task_id}.wav`} type="audio/mpeg" />
+                                        <source src={`https://192.168.100.6:8000/media/audio_uploads/${item.task_id}.wav`} type="audio/mpeg" />
                                         Your browser does not support the audio element.
                                     </audio>
                                 </div>
